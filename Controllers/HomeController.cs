@@ -7,10 +7,9 @@ namespace Blog.Controllers
   public class HomeController : ControllerBase
   {
     [HttpGet("status")]
-    public IActionResult HealthCheck()
-    {
-      return Ok("Status 200: API running...");
-    }
+    [Route("/")]
+    public IActionResult HealthCheck() 
+      => Ok("Status 200: API running...");
 
   }
 }

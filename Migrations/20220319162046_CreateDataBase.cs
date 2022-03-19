@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Blog.Migrations
 {
-    public partial class CreateDatabase : Migration
+    public partial class CreateDataBase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -149,13 +149,13 @@ namespace Blog.Migrations
                     table.ForeignKey(
                         name: "FK_PostTag_PostId",
                         column: x => x.PostId,
-                        principalTable: "Tag",
+                        principalTable: "Post",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PotTag_TagId",
+                        name: "FK_PostTag_TagId",
                         column: x => x.TagId,
-                        principalTable: "Post",
+                        principalTable: "Tag",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -221,10 +221,10 @@ namespace Blog.Migrations
                 name: "UserRole");
 
             migrationBuilder.DropTable(
-                name: "Tag");
+                name: "Post");
 
             migrationBuilder.DropTable(
-                name: "Post");
+                name: "Tag");
 
             migrationBuilder.DropTable(
                 name: "Role");

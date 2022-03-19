@@ -240,19 +240,19 @@ namespace Blog.Migrations
 
             modelBuilder.Entity("PostTag", b =>
                 {
-                    b.HasOne("Blog.Models.Tag", null)
+                    b.HasOne("Blog.Models.Post", null)
                         .WithMany()
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_PostTag_PostId");
 
-                    b.HasOne("Blog.Models.Post", null)
+                    b.HasOne("Blog.Models.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_PotTag_TagId");
+                        .HasConstraintName("FK_PostTag_TagId");
                 });
 
             modelBuilder.Entity("UserRole", b =>
