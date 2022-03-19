@@ -1,5 +1,6 @@
 ﻿using Blog.Data;
 using Blog.Models;
+using Blog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,11 +24,61 @@ namespace Blog.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> NewCategory([FromServices] BlogDataContext context, [FromBody] Category category)
+    public async Task<IActionResult> NewCategory(
+      [FromServices] BlogDataContext context,
+      [FromBody] EditorCategoryViewModel category)
     {
-      await context.Categories!.AddAsync(category);
-      await context.SaveChangesAsync();
-      return Created($"/Category/{category.Id}", category);
+      var newCategory = new Category()
+      {
+        Id = 0,
+        Name = category.Name,
+        Slug = category.Slug,
+      };
+      try
+      {
+        await context.Categories!.AddAsync(newCategory);
+        await context.SaveChangesAsync();
+      }
+      catch (DbUpdateException) { return BadRequest("Impossible to add the new category"); }
+      catch (Exception) { return StatusCode(500, "Internal server error"); }
+
+      return Created($"/Category/{newCategory.Id}", newCategory);
+    }
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateCategory(
+        [FromServices] BlogDataContext context,
+        [FromBody] EditorCategoryViewModel model,
+        [FromRoute] int id)
+    {
+      var category = await context.Categories!.FirstOrDefaultAsync(x => x.Id == id);
+      if (category == null) return NotFound();
+
+      category.Slug = model.Slug;
+      category.Name = model.Name;
+
+      try
+      {
+        context.Update(category);
+        context.SaveChanges();
+      }
+      catch (DbUpdateException) { return BadRequest("Impossible to update category"); }
+      catch (Exception) { return StatusCode(500, "Internal server error"); };
+      return Ok(category);
+    }
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteCategory([FromRoute] int id, [FromServices] BlogDataContext context)
+    {
+      var category = await context.Categories!.FirstOrDefaultAsync(x => x.Id == id);
+      if (category == null) return NotFound();
+
+      try
+      {
+        context.Categories!.Remove(category);
+        context.SaveChanges();
+      }
+      catch (DbUpdateException) { return BadRequest("Impossible to delete category"); }
+      catch (Exception) { return StatusCode(500, "Internal server error"); }
+      return Ok(category);
     }
   }
 }
