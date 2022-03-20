@@ -8,7 +8,7 @@ namespace Blog.Attributes
   {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-      if (!context.HttpContext.Request.Headers.TryGetValue(Configuration.APIHeader, out var APIKeyValue))
+      if (!context.HttpContext.Request.Headers.TryGetValue(Configuration.APIKeyHeaderParameterName, out var APIKeyValue))
       {
         context.Result = new ContentResult
         {
